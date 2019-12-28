@@ -1,4 +1,4 @@
-/* Treehouse FSJS Techdegree
+/* Treehouse FSJS Techdegree - Natalie Hitchcock
  * Project 4 - OOP Game App
  * Game.js */
 
@@ -25,7 +25,7 @@ class Game {
             'Mario',
             'Luigi',
             'Yoshi',
-            'Toad',
+            'Goomba',
             'Princess Peach'
         ];
 
@@ -36,17 +36,15 @@ class Game {
     }
 
     getRandomPhrase() {
-        let randomPhrase = this.phrases[Math.floor(Math.random() * this.phrases.length)];
-            // console.log(randomPhrase); // test to make sure the variable returns a random phrase from the phrases array. 
+        let randomPhrase = this.phrases[Math.floor(Math.random() * this.phrases.length)]; 
         return randomPhrase;
-    } // end getRandomPhrase();
+    } 
     
     startGame() {    
         $overlay.fadeOut(7500);
         $header.delay(5000).fadeIn(6500);
         $header2.delay(7000).fadeIn(6500);
         let chosenPhrase = this.getRandomPhrase();
-        // Sends chosenPhrase to the Phrase class
         this.activePhrase = new Phrase(chosenPhrase);
         // Adds that phrase to the board by calling the addPhraseToDisplay() method on the active Phrase object
         this.activePhrase.addPhraseToDisplay(); 
@@ -74,11 +72,10 @@ class Game {
 
 // removeLife(): this method removes a life from the scoreboard 
 removeLife() {
-    // adds to the missed count by increments of 1
     this.missed += 1; 
     const heart = $('.tries'); 
     for (let i = 0; i < this.missed; i += 1) {
-        heart[i].innerHTML = '<img src="images/frenchHorn.png" alt="RIP" height="45" width="60">';
+        heart[i].innerHTML = '<img src="images/lostHeart.png" alt="RIP" height="45" width="60">';
         // If the player has five missed guesses (i.e they're out of lives), then end the game by calling the gameOver() method
         if (this.missed === 5) {
             this.gameOver();
@@ -99,14 +96,14 @@ checkForWin() {
         })
 
     }
-} // end checkforWin();
+} 
 
 // gameOver(): this method displays the original start screen overlay, and depending on the outcome of the game, 
 gameOver() {
     if (this.missed === 5) {
         $himym.hide();
         $overlay.show().addClass('lose');
-        $gameOverMessage.text('You lose!');
+        $gameOverMessage.text('Game Over. You lose!');
         $startGameBtn.removeAttr('id').addClass('lose__button').text('Try Again?');
         $startGameBtn.click(function() {
             location.reload();
