@@ -4,13 +4,13 @@
 /* Variables */
 
 :root {
-  --color-win: #78CF82;
-  --color-lose: #D94545;
+  --color-win: #E9F30F;
+  --color-lose: #0e44fe;
   --color-start: #5b85b7;
-  --color-neutral: #445069;
-  --color-neutral-light: #D2D2D2;
-  --color-keys: #37474F;
-  --color-keys-light: #E5E5E5;
+  --color-neutral: #384869;
+  --color-neutral-light: #ffff56;
+  --color-keys: rgb(57, 86, 100);
+  --color-keys-light: rgb(158, 187, 211);
   --font-size-large: 60px;
   --font-size-medium: 20px;
   --transition: all .2s ease-in-out;
@@ -61,8 +61,11 @@ button {
 }
 
 #btn__reset {
+  background: #0e44fe;
+  color: #000;
 	width: 200px;
-	margin: 0 auto;
+  margin: 0 auto;
+  font-weight: bold;
 }
 
 .main-container {
@@ -86,9 +89,12 @@ button {
 /* Title */
 
 .header {
-  color: #3a3f58;
+  color: #eb0f0f;
 }
 
+.header2 {
+  color: #000;
+}
 
 /* Phrase */
 
@@ -111,7 +117,7 @@ button {
 
 .show {
   color: #fff;
-  background-color: #4ac0d5;
+  background-color: #0e44fe;
   font-size: 20px;
   height: 65px;
   width: 65px;
@@ -131,14 +137,14 @@ button {
 }
 
 .chosen {
-  background: #3a3f58;
+  background: #E9F30F;
   border-radius: 5px;
   font-size: var(--font-size-medium);
-  color: #FFFFFF;
+  color: #000;
 }
 
 .wrong {
-  background: #f7a964;
+  background: #eb0f0f;
   color: #FFFFFF;
 }
 
@@ -176,15 +182,15 @@ button {
 }
 
 .title {
-  color: #FFF;
+  color: #000;
 }
 
 .start {
-  background-color: #3a3f58;
+  background-color: #E9F30F;
 }
 
 .start a {
-  color: #fff;
+  color: #000;
 }
 
 .win {
@@ -196,9 +202,25 @@ button {
 }
 
 .lose {
-  background-color: #f5785f;
+  background-color: #0e44fe;
 }
 
 .lose a {
   color: var(--color-lose);
+}
+
+.lose__button {
+  background: #E9F30F;
+  color: #000;
+	width: 200px;
+  margin: 0 auto;
+  font-weight: bold;
+}
+
+.win__button {
+  background: #0e44fe;
+  color: #000;
+	width: 200px;
+  margin: 0 auto;
+  font-weight: bold;
 }
