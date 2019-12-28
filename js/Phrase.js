@@ -33,7 +33,7 @@ addPhraseToDisplay() {
          // Prevents player from using the mouse to highlight the letters in the phrase
          document.addEventListener('mousedown', function (e) {
             e.preventDefault();
-          }); // <--- Credit for this snippet goes to Emma from Treehouse via Slack
+          });
     } 
      
 // checkLetter(): checks to see if the letter selected by the player matches a letter in the phrase
@@ -56,4 +56,4 @@ addPhraseToDisplay() {
         }
     }
 
- } // end Phrase class
+ } 

@@ -25,7 +25,7 @@ class Game {
             'Mario',
             'Luigi',
             'Yoshi',
-            'Goomba',
+            'Bowser',
             'Princess Peach'
         ];
 
@@ -87,7 +87,7 @@ removeLife() {
 checkForWin() {
     let notGuessed = document.getElementsByClassName('letter').length;
     if (notGuessed === 0) {
-        $himym.hide();
+        $supermario.hide();
         $overlay.show().addClass('win');
         $gameOverMessage.text('Nice Job! You win!').addClass('header2');
         $startGameBtn.text('Give It A Try?');
@@ -101,7 +101,7 @@ checkForWin() {
 // gameOver(): this method displays the original start screen overlay, and depending on the outcome of the game, 
 gameOver() {
     if (this.missed === 5) {
-        $himym.hide();
+        $supermario.hide();
         $overlay.show().addClass('lose');
         $gameOverMessage.text('Game Over. You lose!');
         $startGameBtn.removeAttr('id').addClass('lose__button').text('Try Again?');
