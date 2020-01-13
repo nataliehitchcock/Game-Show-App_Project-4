@@ -46,7 +46,6 @@ class Game {
         $header2.delay(7000).fadeIn(6500);
         let chosenPhrase = this.getRandomPhrase();
         this.activePhrase = new Phrase(chosenPhrase);
-        // Adds that phrase to the board by calling the addPhraseToDisplay() method on the active Phrase object
         this.activePhrase.addPhraseToDisplay(); 
 } 
 
@@ -90,7 +89,7 @@ checkForWin() {
         $supermario.hide();
         $overlay.show().addClass('win');
         $gameOverMessage.text('Nice Job! You win!').addClass('header2');
-        $startGameBtn.text('Give It A Try?');
+        $startGameBtn.text('Give It Another Try?');
         $startGameBtn.click(function() {
             location.reload();
         })
