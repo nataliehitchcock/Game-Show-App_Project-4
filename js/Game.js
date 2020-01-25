@@ -1,115 +1,155 @@
-/* Treehouse FSJS Techdegree - Natalie Hitchcock
+/* Treehouse FSJS Techdegree
  * Project 4 - OOP Game App
  * Game.js */
 
-// Variables
-let letterCheck = this.phrase;
-const $startGameBtn = $('#btn__reset');
-const $overlay = $('#overlay');
-const $qwerty = $('#qwerty button');
-let $supermario = $('#supermario');
-let $gameOverMessage = $('#game-over-message');
-let $header = $('.header');
-let $header2 = $('.header2');
 
-//Creating the game class
-class Game {
-
-    constructor () {
-        // missed: used to track the number of missed guesses by the player. 
-         // The initial value is 0, since no guesses have been made at the start of the game.
+class Game{
+    constructor(){
         this.missed = 0;
-        // phrases: an array of five Phrase objects to use with the game. 
-         // A phrase should only include letters and spaces— no numbers, punctuation or other special characters.
-        this.phrases = [
-            'Mario',
-            'Luigi',
-            'Yoshi',
-            'Bowser',
-            'Princess Peach'
-        ];
-
-          // activePhrase: This is the Phrase object that’s currently in play. 
-        // The initial value is null.
-        // Within the startGame() method, this property will be set to the Phrase object returned from a call to the getRandomPhrase() method.
-       this.activePhrase = null;
+        this.phrases = this.createPhrases();
+        this.activePhrase = null;
     }
 
-    getRandomPhrase() {
-        let randomPhrase = this.phrases[Math.floor(Math.random() * this.phrases.length)]; 
-        return randomPhrase;
-    } 
+    /**
+     * Creates phrase for use in game
+     * @return {array} An Array of phrases that could be used in the game
+     */
+
+    createPhrases(){
+        let phrases = [
+            {phrase: 'mario'},
+            {phrase: 'luigi'},
+            {phrase: 'princess peach'},
+            {phrase: 'bowser'},
+            {phrase: 'yoshi'}
+        ]
+        return phrases;
+    }
+
+    /**
+     * Selects random phrase from phrases property
+     * @return {object} Phrase object chosen to be used
+     */
+
+    getRandomPhrase(){
+        let randNum = Math.floor(Math.random() * 4)
+        return new Phrase(this.phrases[randNum].phrase);
+    }
+    startGame(){
+        const phraseLetters = document.querySelectorAll('ul li');
+        if (phraseLetters.length > 0){
+            for (let i = 0; i < phraseLetters.length; i ++){
+                phraseLetters[i].style.display = 'none';
+            }
+            const buttons = document.querySelectorAll('button')
+            for (let y = 0; y < buttons.length; y ++) {
+                buttons[y].className = 'key';
+                buttons[y].disabled = false;
+            }
+            const liveHearts = document.getElementsByClassName('tries')
+            for (let x = 0; x < liveHearts.length; x ++){
+                liveHearts[x].innerHTML = "<img src='images/liveHeart.png' alt='Heart Icon' height='35' width='30'>"
+            }
+            let span = document.getElementById("heart-span")
+            span.style.display = "none"
+        }
+        document.getElementById('overlay').style.display = 'none';
+        this.activePhrase = this.getRandomPhrase();
+        this.activePhrase.addPhraseToDisplay();
+        console.log(`Active Phrase - phrase: ${this.activePhrase.phrase}`)
+    }
+
+    /**
+     * Checks for win
+     * @return {boolean} 
+     */
     
-    startGame() {    
-        $overlay.fadeOut(7500);
-        $header.delay(5000).fadeIn(6500);
-        $header2.delay(7000).fadeIn(6500);
-        let chosenPhrase = this.getRandomPhrase();
-        this.activePhrase = new Phrase(chosenPhrase);
-        this.activePhrase.addPhraseToDisplay(); 
-} 
-
-// handleInteraction(): this method controls most of the game logic 
-    // It checks to see if the button clicked by the player matches a letter in the phrase, 
-        // and then directs the game based on a correct or incorrect guess
-        handleInteraction(letterCheck) {
-            let letter = letterCheck.textContent;
-            if (this.activePhrase.checkLetter(letterCheck.textContent)) {
-                this.activePhrase.showMatchedLetter(letter);
-                letterCheck.disabled = true;
-            }         
-            if (matched === false) {
-                letterCheck.className = 'wrong';
-                this.removeLife();
-            }
-            if (matched === true) {
-                letterCheck.className = 'chosen';
-                this.activePhrase.showMatchedLetter(letter);
-                this.checkForWin();
-            }
+    checkForWin(){
+        //Checks if player has revealed all of the letters in the active phrase;
+        let hideCheck = document.getElementsByClassName('hide letter');
+        let showCheck = document.getElementsByClassName('show letter');
+        if (showCheck.length > 0 && hideCheck.length < 1){
+            return true;
+        } 
+        else {
+            return false;
         }
+    }
 
-// removeLife(): this method removes a life from the scoreboard 
-removeLife() {
-    this.missed += 1; 
-    const heart = $('.tries'); 
-    for (let i = 0; i < this.missed; i += 1) {
-        heart[i].innerHTML = '<img src="images/lostHeart.png" alt="RIP" height="45" width="60">';
-        // If the player has five missed guesses (i.e they're out of lives), then end the game by calling the gameOver() method
-        if (this.missed === 5) {
-            this.gameOver();
+    /**
+     * Increases the value of the 'missed' property
+     * Removes a life from the scoreboard
+     * Checks if player has remaining lives and ends game if no more lives remain
+    */
+
+    removeLife(){
+        //let span = document.createElement("span");//create span for 'lives' counter
+        let span = document.getElementById("heart-span")
+        let scoreboard = document.getElementById("scoreboard").appendChild(span)
+        span.style.display = "none"
+        let x = 5;
+
+        if(this.missed < 4){
+            const liveHearts = document.getElementsByClassName('tries')
+            //converts liveHearts HTML collection to array
+            let arrLive = [...liveHearts];
+            //sets arrLive index equal to this.missed count
+            let firstLive = arrLive[this.missed];
+            this.missed += 1;
+            let string = firstLive.innerHTML
+            let replace = string.replace("liveHeart", "lostHeart");
+            //replaces innerHTML of arrLive element at specified index
+            firstLive.innerHTML = `${replace}`;
+
+            //dislays 'lives' counter to scoreboard
+            span.style.display = "block"
+            span.textContent = (x - this.missed + " live(s) left ") //setting text
+        }    
+        else {
+            this.gameOver(false);
+        } 
+    }
+
+    /**
+     * Displays game over message
+     * @param {boolean} gameWon 
+     */
+
+    gameOver(gameWon){
+        const overlay = document.getElementById('overlay')
+        overlay.style.display = 'flex';
+        if (!gameWon){
+            overlay.className = 'lose';
+            overlay.querySelector('#game-over-message').innerText = "Game over, Try again?";
         }
-    }   
+        else {
+            overlay.className= 'win';
+            overlay.querySelector('#game-over-message').innerText = "You won, congratulations!";
+        }
+    }
+
+    /**
+     * Handles onscreen keyboard button clicks
+     * @param {HTMLButtonElement} button 
+     */
+
+    handleInteraction(button){
+        button.disabled = true;
+        //disable the selected letter's onscreen keyboard button
+        let check = game.activePhrase.checkLetter(button.textContent);
+        if (check === false){
+            button.classList ='wrong'
+            this.removeLife();
+        }
+        else {
+            button.classList ='chosen'
+            //call showMatchedLetter on the phrase
+            game.activePhrase.showMatchedLetter(button.textContent)
+            //if checkForWin returns true, call gameOver(true)
+            this.checkForWin()
+                if (this.checkForWin()){
+                this.gameOver(true);
+                }
+        }
+    }
 }
-
-// checkForWin(): this method checks to see if the player has revealed all of the letters in the active phrase
-checkForWin() {
-    let notGuessed = document.getElementsByClassName('letter').length;
-    if (notGuessed === 0) {
-        $supermario.hide();
-        $overlay.show().addClass('win');
-        $gameOverMessage.text('Nice Job! You win!').addClass('header2');
-        $startGameBtn.text('Give It Another Try?');
-        $startGameBtn.click(function() {
-            location.reload();
-        })
-
-    }
-} 
-
-// gameOver(): this method displays the original start screen overlay, and depending on the outcome of the game, 
-gameOver() {
-    if (this.missed === 5) {
-        $supermario.hide();
-        $overlay.show().addClass('lose');
-        $gameOverMessage.text('Game Over. You lose!');
-        $startGameBtn.removeAttr('id').addClass('lose__button').text('Try Again?');
-        $startGameBtn.click(function() {
-            location.reload();
-        })
-    }
-} // end gameOver();
-
-
-} // end Game class
-    
