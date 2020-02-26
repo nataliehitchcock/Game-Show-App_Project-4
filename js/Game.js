@@ -1,7 +1,8 @@
 /* Treehouse FSJS Techdegree - Natalie Hitchcock
  * Project 4 - OOP Game App
  * Game.js */
-// Variables
+
+   // Variables
 let letterCheck = this.phrase;
 const $startGameBtn = $('#btn__reset');
 const $overlay = $('#overlay');
@@ -10,61 +11,97 @@ let $supermario = $('#supermario');
 let $gameOverMessage = $('#game-over-message');
 let $header = $('.header');
 let $header2 = $('.header2');
-//Creating the game class
-class Game {
-    constructor () {
-        // missed: used to track the number of missed guesses by the player. 
-         // The initial value is 0, since no guesses have been made at the start of the game.
-        this.missed = 0;
-        // phrases: an array of five Phrase objects to use with the game. 
-         // A phrase should only include letters and spaces— no numbers, punctuation or other special characters.
-        this.phrases = [
-            'Mario',
-            'Luigi',
-            'Yoshi',
-            'Bowser',
-            'Princess Peach'
-        ];
-          // activePhrase: This is the Phrase object that’s currently in play. 
-        // The initial value is null.
-        // Within the startGame() method, this property will be set to the Phrase object returned from a call to the getRandomPhrase() method.
-       this.activePhrase = null;
-    }
-    getRandomPhrase() {
-        let randomPhrase = this.phrases[Math.floor(Math.random() * this.phrases.length)]; 
-        return randomPhrase;
-    } 
-    
-    startGame() {    
-        $overlay.fadeOut(7500);
-        $header.delay(5000).fadeIn(6500);
-        $header2.delay(7000).fadeIn(6500);
-        let chosenPhrase = this.getRandomPhrase();
-        this.activePhrase = new Phrase(chosenPhrase);
-        // Adds that phrase to the board by calling the addPhraseToDisplay() method on the active Phrase object
-        this.activePhrase.addPhraseToDisplay(); 
-} 
 
-@@ -90,7 +89,7 @@ checkForWin() {
-        $supermario.hide();
-        $overlay.show().addClass('win');
-        $gameOverMessage.text('Nice Job! You win!').addClass('header2');
-        $startGameBtn.text('Give It Another Try?');
-        $startGameBtn.click(function() {
-            location.reload();
-        })
-    }
-} 
-// gameOver(): this method displays the original start screen overlay, and depending on the outcome of the game, 
-gameOver() {
-    if (this.missed === 5) {
-        $supermario.hide();
-        $overlay.show().addClass('lose');
-        $gameOverMessage.text('Game Over. You lose!');
-        $startGameBtn.removeAttr('id').addClass('lose__button').text('Try Again?');
-        $startGameBtn.click(function() {
-            location.reload();
-        })
-    }
-} // end gameOver();
-// end Game class
+class Game {
+  constructor(){
+      this.missed = 0;
+      this.phrases = [];
+      this.activePhrase = null;
+  }
+  startGame(){
+      const overlay = document.querySelector('#overlay');
+
+     // Game Phrases
+      const gamePhrases = ['Mario','Princess Peach','Yoshi','Bowser','Luigi'];
+      overlay.style.display = 'none';
+      gamePhrases.forEach(phrase => this.phrases.push(new Phrase(phrase)));
+      // Call getRandomPhrase method & set active phrase value
+      this.activePhrase = this.getRandomPhrase(); 
+      this.activePhrase.addPhraseToDisplay(this.activePhrase);
+  }
+  getRandomPhrase(){
+      // Generates a random number 0-4
+      const randomNumber = Math.floor(Math.random() * 4)
+      return this.phrases[randomNumber];
+  }
+  handleInteraction(e){
+      const overlay = document.querySelector('#overlay').hasAttribute('style');
+
+      // Get the active phrase
+      const activePhrase = this.activePhrase.phrase;
+      const letterChecker = this.activePhrase.checkLetter(e, activePhrase);
+      Array.from(document.querySelectorAll('.keyrow > .key'))
+          .forEach(key => {
+              // Check letter for a match
+              if (letterChecker === -1 && e === key.textContent && !key.hasAttribute('disabled') && overlay) {
+                  key.classList.add('wrong');
+                  key.style.cursor = 'default';
+                  key.setAttribute('disabled', 'disabled');
+                  this.removeLife();
+              // Check letter for a match and if the player is correct, they win. Otherwise, they lose.
+              } else if (letterChecker >= 0 && e === key.textContent && !key.hasAttribute('disabled') && overlay) {
+                  key.classList.add('chosen');
+                  key.style.cursor = 'default';
+                  key.setAttribute('disabled', 'disabled');
+                  // send letter to showMatchedLetter method in Phrase object
+                  this.activePhrase.showMatchedLetter(e);
+                  // check if win
+                  if (this.checkForWin() === 'win') { this.gameOver('win');}
+              }
+          });  
+  }
+  removeLife(){
+      const lives = document.querySelectorAll(".tries img");
+      this.missed += 1;
+
+      // If the player loses then image will switch to a lost life/heart
+      lives[this.missed-1].setAttribute('src', 'images/lostHeart.png');
+       if (this.missed === 5) { this.gameOver('lose') };
+  }
+  checkForWin(){
+      const matchedLetters = document.querySelectorAll('.show');
+      const activePhrase = this.activePhrase.phrase.replace(/ /g, "");
+      if (matchedLetters.length === activePhrase.length) { return 'win'; }
+  }
+  gameOver(gameStatus){
+      const overlay = document.querySelector('#overlay');
+      const button = document.querySelector('#btn__reset');
+      const gameMessage = document.querySelector('#game-over-message');
+      
+      //If the player wins, it will prompt the winning message
+      if (gameStatus === 'win') {
+          overlay.className = 'win';
+          gameMessage.innerHTML = 'Congrats! You won! <br><br> <img src="images/mariooneup.gif" height="375">';
+      }
+      //If the player loses, then it will prompt the losing message
+      if (gameStatus === 'lose') {
+          overlay.className = 'lose';
+          gameMessage.innerHTML = 'Sorry, you lost! <br><br> <img src="images/mariocry.gif">';
+      }
+
+      document.querySelector('.title').innerText= " ";
+      // Button text updated to 'Play Again?'
+      button.innerText = 'Play Again?';
+      overlay.removeAttribute('style');
+      document.querySelector('#phrase ul').innerHTML = '';
+      // Reset hearts
+      Array.from(document.querySelectorAll(".tries img"))
+          .forEach(img => img.setAttribute('src', 'images/liveHeart.png'));
+      Array.from(document.querySelectorAll('.keyrow > .key'))
+          .forEach(key => {
+              key.className = 'key'
+              key.removeAttribute('style');
+              key.removeAttribute('disabled');
+          });
+  }
+}
