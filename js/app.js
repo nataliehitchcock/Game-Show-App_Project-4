@@ -2,14 +2,14 @@
  * Project 4 - OOP Game App
  * app.js */
 
- // global variable to select start game button
+ // These variables create a qwerty keyboard and a reset button for when the game starts. There's also a regex to populate all of the letters.
  const startGame = document.querySelector('#btn__reset');
  const gameKeys = document.querySelector('#qwerty');
  const keyDownCheck = new RegExp(/[a-z]/);
 
  let newGame;
  
-
+//Event listener to start the game every time a new game begins, and all the letters have been made lowercase.
  startGame.addEventListener('click', () => {
      newGame = new Game();
      newGame.startGame();
